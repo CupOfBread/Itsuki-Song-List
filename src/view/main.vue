@@ -41,19 +41,23 @@
   }
   const timeout = ref()
   function inputSearch(content: string) {
-    if (content == '' || content == null) {
-      showSongList.value = SongList.value
-      return
-    }
     clearTimeout(timeout.value)
     timeout.value = setTimeout(() => {
       showSongList.value = SongList.value
+      if (content == '' || content == null) return
+      // console.log(content)
       showSongList.value = showSongList.value.filter(
         (item: { song: string; singer: string }) => {
-          return item.song === content || item.singer === content
+          let flag = false
+          if (item.song !== '' && item.song !== null) {
+            flag = item.song.includes(content)
+          }
+          if (item.singer !== '' && item.song !== null && !flag) {
+            flag = item.singer.includes(content)
+          }
+          return flag
         }
       )
-      console.log(content)
     }, 300)
   }
   toast.success('欢迎来到星谷树的歌单！', {
