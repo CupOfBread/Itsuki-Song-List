@@ -1,9 +1,14 @@
 import request from '../utils/request'
 
-const SongList = Array<Object>()
-
-request({ url: '/fans_count', method: 'get' }).then((res) => {
-  // console.log(res)
-})
+const SongList = [
+  {
+    icon:'',
+    song: '',
+    singer: '',
+    lang: '',
+    style: '',
+    remark: '',
+  },
+]
 
 export default SongList

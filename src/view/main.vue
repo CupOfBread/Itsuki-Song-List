@@ -9,6 +9,8 @@
     timeout: 3000,
   })
   function copySongName(name: string) {
+    navigator.clipboard.writeText('点歌 ' + name)
+
     toast.success('“' + name + '” 复制成功！', {
       timeout: 3000,
     })
@@ -19,7 +21,9 @@
     })
   }
   const { SongList } = storeToRefs(useStore())
-  console.log(SongList.value)
+  request({ url: '/song/all/index', method: 'get' }).then((res) => {
+    SongList.value = res.data.result
+  })
 </script>
 
 <template>
@@ -36,7 +40,7 @@
         星谷樹_ITSUKI
       </div>
       <div class="text-xl animate__animated animate__rubberBand">
-        和她拿手的 <span class="font-bold">123</span> 首歌
+        和她拿手的 <span class="font-bold">{{ SongList.length }}</span> 首歌
       </div>
       <div
         class="my-6 mx-auto rounded-2xl border-red-800 border-2 hover:shadow-lg grid grid-cols-2 md:grid-cols-4 gap-3 p-4 md:p-6 duration-500">
@@ -69,6 +73,9 @@
           随机选取
         </div>
       </div>
+      <div class="my-6 text-lg font-bold text-red-700 underline">
+        复制功能已经可用，“类别”“搜索”“随机选取”功能暂无法使用。面包正在全力开发😘！
+      </div>
       <div class="mb-2 text-gray-500">
         <i class="fa-regular fa-paper-plane mr-2"></i>轻点歌名可以复制喔~
       </div>
@@ -76,50 +83,33 @@
         <table class="w-full mb-6 hover:shadow-lg duration-700">
           <thead class="w-full border-b-2 border-red-900">
             <tr>
-              <th class="w-16"></th>
+              <th class="w-28 hidden md:table-cell"></th>
               <th class="w-1/2">歌名</th>
-              <th>歌手</th>
-              <th class="hidden md:table-cell w-16">语言</th>
+              <th class="w-28">歌手</th>
+              <th class="hidden md:table-cell w-28">语言</th>
+              <th class="hidden md:table-cell w-28">风格</th>
               <th class="hidden md:table-cell">备注</th>
             </tr>
           </thead>
           <tbody>
-            <tr @click="copySongName('刻在我心底的名字')">
-              <th><i class="fa-solid fa-tree"></i></th>
-              <th>刻在我心底的名字</th>
-              <th>卢广仲</th>
-              <th class="hidden md:table-cell">国语</th>
-              <th class="hidden md:table-cell">备注</th>
-            </tr>
-            <tr>
-              <th></th>
-              <th>慢慢喜欢你</th>
-              <th>莫文蔚</th>
-              <th class="hidden md:table-cell">国语</th>
-              <th class="hidden md:table-cell">备注</th>
+            <tr
+              @click="copySongName(item.song)"
+              v-for="(item, index) in SongList"
+              :key="index">
+              <th class="hidden md:table-cell w-32">
+                <i :class="item.icon"></i>
+              </th>
+              <th>{{ item.song }}</th>
+              <th>{{ item.singer }}</th>
+              <th class="hidden md:table-cell">{{ item.lang }}</th>
+              <th class="hidden md:table-cell">{{ item.style }}</th>
+              <th class="hidden md:table-cell">{{ item.remark }}</th>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="text-3xl mb-4">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-3xl mb-5">施工中...</div>
-      <div class="text-center text-gray-400 pb-8 mt-28">
+
+      <div class="text-center text-gray-400 pb-8 mt-24">
         <div
           class="text-red-400 animate__animated animate__bounce animate__infinite">
           <i class="fa-solid fa-heart"></i>

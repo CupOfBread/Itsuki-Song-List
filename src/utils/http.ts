@@ -1,5 +1,5 @@
-// const BaseUrl = 'https://itsuki.cupbread.cn/'
-const BaseUrl = 'http://127.0.0.1:8181/'
+const BaseUrl = 'https://itsuki.cupbread.cn/'
+// const BaseUrl = 'http://127.0.0.1:8181/'
 
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
@@ -16,7 +16,7 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
   (res) => {
-    return res.data
+    return res
   },
   (error) => {
     toast.error('服务器网络异常，请稍后重试！', {
