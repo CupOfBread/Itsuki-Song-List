@@ -19,7 +19,7 @@ http.interceptors.response.use(
     return res
   },
   (error) => {
-    toast.error('服务器网络异常，请稍后重试！', {
+    toast.error('网络异常，稍后重试捏🤔~', {
       timeout: 3000,
     })
   }

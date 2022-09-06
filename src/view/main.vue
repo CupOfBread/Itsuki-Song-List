@@ -3,26 +3,61 @@
   import request from '../utils/request'
   import { useStore } from '../store'
   import { storeToRefs } from 'pinia'
+  import { ref } from 'vue'
 
   const toast = useToast()
-  toast.success('欢迎来到星谷树的歌单！', {
-    timeout: 3000,
-  })
-  function copySongName(name: string) {
-    navigator.clipboard.writeText('点歌 ' + name)
+  const nowLang = ref('')
+  const showSongList = ref()
+  const searchContent = ref()
 
-    toast.success('“' + name + '” 复制成功！', {
-      timeout: 3000,
-    })
-  }
-  function switchSongType(name: string) {
-    toast.success('试试“' + name + '” 歌吧！', {
-      timeout: 3000,
-    })
-  }
   const { SongList } = storeToRefs(useStore())
   request({ url: '/song/all/index', method: 'get' }).then((res) => {
     SongList.value = res.data.result
+    showSongList.value = SongList.value
+  })
+  function copySongName(song: string) {
+    navigator.clipboard.writeText('点歌 ' + song)
+
+    toast.success('“' + song + '” 复制成功！', {
+      timeout: 3000,
+    })
+  }
+  function randomCopy() {
+    let rand = Math.floor(Math.random() * (SongList.value.length - 1))
+    copySongName(SongList.value[rand].song)
+  }
+  function switchLang(lang: string) {
+    showSongList.value = SongList.value
+    if (lang !== '') {
+      toast.success('试试“' + lang + '” 歌吧！', {
+        timeout: 3000,
+      })
+      showSongList.value = showSongList.value.filter(
+        (item: { lang: string }) => item.lang === lang
+      )
+    }
+    searchContent.value = null
+    nowLang.value = lang
+  }
+  const timeout = ref()
+  function inputSearch(content: string) {
+    if (content == '' || content == null) {
+      showSongList.value = SongList.value
+      return
+    }
+    clearTimeout(timeout.value)
+    timeout.value = setTimeout(() => {
+      showSongList.value = SongList.value
+      showSongList.value = showSongList.value.filter(
+        (item: { song: string; singer: string }) => {
+          return item.song === content || item.singer === content
+        }
+      )
+      console.log(content)
+    }, 300)
+  }
+  toast.success('欢迎来到星谷树的歌单！', {
+    timeout: 2000,
   })
 </script>
 
@@ -45,36 +80,47 @@
       <div
         class="my-6 mx-auto rounded-2xl border-red-800 border-2 hover:shadow-lg grid grid-cols-2 md:grid-cols-4 gap-3 p-4 md:p-6 duration-500">
         <div
-          @click="switchSongType('国语')"
-          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg">
+          @click="switchLang('国语')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
+          :class="nowLang == '国语' ? 'border-2 border-red-600' : ''">
           国语
         </div>
         <div
-          @click="switchSongType('日语')"
-          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg">
+          @click="switchLang('粤语')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
+          :class="nowLang == '粤语' ? 'border-2 border-red-600' : ''">
+          粤语
+        </div>
+        <div
+          @click="switchLang('日语')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
+          :class="nowLang == '日语' ? 'border-2 border-red-600' : ''">
           日语
         </div>
         <div
-          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg">
+          @click="switchLang('英语')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
+          :class="nowLang == '英语' ? 'border-2 border-red-600' : ''">
           英语
         </div>
         <div
-          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg">
-          粤语
+          @click="switchLang('')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg order-last">
+          重置
         </div>
       </div>
       <div class="mb-6 grid md:grid-cols-4 gap-4 px-4 md:px-6">
         <input
           type="search"
           placeholder="搜索"
+          @input="inputSearch(searchContent)"
+          v-model="searchContent"
           class="md:col-span-3 rounded-2xl h-10 px-4 text-black" />
         <div
+          @click="randomCopy()"
           class="md:col-span-1 h-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg rounded-2xl leading-10">
           随机选取
         </div>
-      </div>
-      <div class="my-6 text-lg font-bold text-red-700 underline">
-        复制功能已经可用，“类别”“搜索”“随机选取”功能暂无法使用。面包正在全力开发😘！
       </div>
       <div class="mb-2 text-gray-500">
         <i class="fa-regular fa-paper-plane mr-2"></i>轻点歌名可以复制喔~
@@ -83,7 +129,9 @@
         <table class="w-full mb-6 hover:shadow-lg duration-700">
           <thead class="w-full border-b-2 border-red-900">
             <tr>
-              <th class="w-28 hidden md:table-cell"></th>
+              <th class="w-28 hidden md:table-cell">
+                <i class="fa-solid fa-feather"></i>
+              </th>
               <th class="w-1/2">歌名</th>
               <th class="w-28">歌手</th>
               <th class="hidden md:table-cell w-28">语言</th>
@@ -94,12 +142,26 @@
           <tbody>
             <tr
               @click="copySongName(item.song)"
-              v-for="(item, index) in SongList"
+              v-for="(item, index) in showSongList"
               :key="index">
-              <th class="hidden md:table-cell w-32">
-                <i :class="item.icon"></i>
+              <th class="hidden md:table-cell w-32 justify-center">
+                <div class="justify-center flex px-3 gap-x-1">
+                  <i
+                    class="fa-solid fa-bookmark text-red-700 w-8 order-last"
+                    v-show="item.isTop == 1"></i>
+
+                  <i
+                    class="w-8"
+                    :class="item.icon"
+                    v-if="item.icon !== null"></i>
+                </div>
               </th>
-              <th>{{ item.song }}</th>
+              <th>
+                {{ item.song }}
+                <i
+                  class="fa-solid fa-bookmark text-red-700 md:hidden inline-block"
+                  v-show="item.isTop == 1"></i>
+              </th>
               <th>{{ item.singer }}</th>
               <th class="hidden md:table-cell">{{ item.lang }}</th>
               <th class="hidden md:table-cell">{{ item.style }}</th>

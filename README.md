@@ -5,8 +5,6 @@
 
 在线检索歌曲名，记录主播歌曲库的一站式平台。
 
-当前状态：【开发中(80%)...】
-
 星谷樹_itsuki 的BILIBILI：https://space.bilibili.com/5816642
 
 ## 基于

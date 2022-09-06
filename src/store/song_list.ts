@@ -2,7 +2,9 @@ import request from '../utils/request'
 
 const SongList = [
   {
-    icon:'',
+    icon: '',
+    isTop: 0,
+    initials:'',
     song: '',
     singer: '',
     lang: '',
