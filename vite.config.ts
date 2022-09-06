@@ -2,21 +2,16 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import externalGlobals from 'rollup-plugin-external-globals'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   build: {
     rollupOptions: {
-      external: [
-        'vue',
-        'axios',
-        'vue-demi',
-        'pinia',
-      ],
+      external: ['vue', 'axios', 'vue-router', 'vue-demi', 'pinia'],
       plugins: [
         externalGlobals({
           vue: 'Vue',
-          axios: 'Axios',
+          'vue-router': 'VueRouter',
+          axios: 'axios',
           'vue-demi': 'VueDemi',
           pinia: 'Pinia',
         }),
