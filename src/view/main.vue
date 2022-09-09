@@ -30,7 +30,7 @@
     showSongList.value = SongList.value
     if (lang !== '') {
       toast.success('试试“' + lang + '” 歌吧！', {
-        timeout: 3000,
+        timeout: 1200,
       })
       showSongList.value = showSongList.value.filter(
         (item: { lang: string }) => item.lang === lang
@@ -45,7 +45,6 @@
     timeout.value = setTimeout(() => {
       showSongList.value = SongList.value
       if (content == '' || content == null) return
-      // console.log(content)
       showSongList.value = showSongList.value.filter(
         (item: { song: string; singer: string }) => {
           let flag = false
@@ -59,6 +58,9 @@
         }
       )
     }, 300)
+  }
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   toast.success('欢迎来到星谷树的歌单！', {
     timeout: 2000,
@@ -86,25 +88,25 @@
         <div
           @click="switchLang('国语')"
           class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
-          :class="nowLang == '国语' ? 'border-2 border-red-600' : ''">
+          :class="nowLang == '国语' ? 'border border-red-600' : ''">
           国语
         </div>
         <div
           @click="switchLang('粤语')"
           class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
-          :class="nowLang == '粤语' ? 'border-2 border-red-600' : ''">
+          :class="nowLang == '粤语' ? 'border border-red-600' : ''">
           粤语
         </div>
         <div
           @click="switchLang('日语')"
           class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
-          :class="nowLang == '日语' ? 'border-2 border-red-600' : ''">
+          :class="nowLang == '日语' ? 'border border-red-600' : ''">
           日语
         </div>
         <div
           @click="switchLang('英语')"
           class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
-          :class="nowLang == '英语' ? 'border-2 border-red-600' : ''">
+          :class="nowLang == '英语' ? 'border border-red-600' : ''">
           英语
         </div>
         <div
@@ -113,16 +115,16 @@
           重置
         </div>
       </div>
-      <div class="mb-6 grid md:grid-cols-4 gap-4 px-4 md:px-6">
+      <div class="mb-6 grid md:grid-cols-4 md:gap-4 px-4 md:px-6">
         <input
           type="search"
           placeholder="搜索"
           @input="inputSearch(searchContent)"
           v-model="searchContent"
-          class="md:col-span-3 rounded-2xl h-10 px-4 text-black" />
+          class="md:col-span-3 rounded-2xl w-full mb-3 md:mb-0 h-10 px-4 text-black" />
         <div
           @click="randomCopy()"
-          class="md:col-span-1 h-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg rounded-2xl leading-10">
+          class="md:col-span-1 h-10 w-full duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg rounded-2xl leading-10">
           随机选取
         </div>
       </div>
