@@ -84,7 +84,7 @@ toast.success('欢迎来到星谷树的歌单！', {
   >
     <i class="fa-solid fa-arrow-up text-gray-500"></i>
   </div>
-  <div class="w-full h-full centerbg text-center justify-center flex relative">
+  <div class="w-full h-full centerbg text-center justify-center flex">
     <div class="xl:w-1280 md:w-5/6 w-11/12">
       <div
         class="h-32 w-32 selection:avatar mt-10 md:mt-20 mb-2 hover:scale-105 shadow-xl rounded-full overflow-hidden hover:shadow-2xl duration-700 inline-block"
