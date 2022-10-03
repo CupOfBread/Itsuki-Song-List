@@ -47,13 +47,24 @@ function inputSearch(content: string) {
     showSongList.value = SongList.value
     if (content == '' || content == null) return
     showSongList.value = showSongList.value.filter(
-      (item: { song: string; singer: string }) => {
+      (item: {
+        song: string
+        singer: string
+        remark: string
+        style: string
+      }) => {
         let flag = false
         if (item.song !== '' && item.song !== null) {
           flag = item.song.includes(content)
         }
-        if (item.singer !== '' && item.song !== null && !flag) {
+        if (item.singer !== '' && item.singer !== null && !flag) {
           flag = item.singer.includes(content)
+        }
+        if (item.remark !== '' && item.remark !== null && !flag) {
+          flag = item.remark.includes(content)
+        }
+        if (item.style !== '' && item.style !== null && !flag) {
+          flag = item.style.includes(content)
         }
         return flag
       }
@@ -70,6 +81,9 @@ onMounted(() => {
 const scroll = ref(0)
 function scrollWatch() {
   scroll.value = document.documentElement.scrollTop || document.body.scrollTop
+}
+function openURL(url: string) {
+  window.open(url, '_blank')
 }
 toast.success('欢迎来到星谷树的歌单！', {
   timeout: 2000,
@@ -122,6 +136,14 @@ toast.success('欢迎来到星谷树的歌单！', {
           class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg"
           :class="nowLang == '英语' ? 'border border-red-600' : ''"
         >英语</div>
+        <div
+          @click="openURL('https://www.itsuki.club')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg order-last"
+        >小树の主页</div>
+        <div
+          @click="openURL('https://button.itsuki.club/')"
+          class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg order-last"
+        >小树の按钮</div>
         <div
           @click="switchLang('')"
           class="option rounded-2xl h-10 leading-10 duration-500 bg-opacity-80 bg-white cursor-pointer hover:bg-opacity-100 hover:shadow-lg order-last"
@@ -201,6 +223,15 @@ toast.success('欢迎来到星谷树的歌单！', {
           <i class="fa-regular fa-copyright mr-2"></i>
           <span class="mr-2">2021-2022</span>
           <span class="mr-2 block lg:inline-block lg:mt-2">星谷樹的歌单</span>
+          <span>
+            <a
+              href="https://github.com/CupOfBread/Itsuki-Song-List"
+              target="_blank"
+              class="text-yellow-500"
+            >
+              <i class="fa-brands fa-github-alt mr-1"></i>Github
+            </a>
+          </span>
         </div>
       </div>
     </div>
